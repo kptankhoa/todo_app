@@ -10,7 +10,13 @@ class NewTodoScreen extends StatefulWidget {
 class _NewTodoScreenState extends State<NewTodoScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Create new To do')),
+        body: const Center(
+          child: Text('yes?'),
+        ),
+      ),
+    );
   }
 }
-
