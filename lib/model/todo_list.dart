@@ -14,7 +14,18 @@ class ToDoList {
 
   List<ToDo> getAll() => list;
 
-  List<ToDo> getUndoneList() => list.where((todo) => !todo.isDone).toList();
+  ToDoList getUndoneToDoList() =>
+      ToDoList(list: list.where((todo) => !todo.isDone).toList());
 
-  List<ToDo> getDoneList() => list.where((todo) => todo.isDone).toList();
+  ToDoList getDoneToDoList() =>
+      ToDoList(list: list.where((todo) => todo.isDone).toList());
+
+  ToDoList searchByTitle(String content) => ToDoList(
+        list: list
+            .where(
+              (todo) =>
+                  todo.title.toLowerCase().contains(content.toLowerCase()),
+            )
+            .toList(),
+      );
 }

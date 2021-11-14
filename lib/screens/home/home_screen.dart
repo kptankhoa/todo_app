@@ -1,26 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/common/widgets/modified/scroll_list_view/scroll_list_view.dart';
+import 'package:todo_app/common/const.dart';
 import 'package:todo_app/common/widgets/search_bar/search_bar.dart';
-import 'package:todo_app/common/widgets/todo_item/todo_item.dart';
+import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/model/todo_list.dart';
+import 'package:todo_app/screens/home/widgets/todo_list_view.dart';
 
 class HomeScreen extends StatefulWidget {
-  final ToDoList toDoList;
-
-  const HomeScreen({Key? key, required this.toDoList}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static final ToDoList _toDoList = dummyToDoList;
+  String _searchContent = '';
+  int _selectedIndex = 0;
+  ToDoList _activeToDoList = _toDoList;
+  ToDoList _searchedToDoList = _toDoList;
+
+  ValueChanged<String>? onSearchContentChange(String value) {
+    setState(() {
+      _searchContent = value;
+      _searchedToDoList = _activeToDoList.searchByTitle(value);
+    });
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        return setState(() => _activeToDoList = _toDoList);
+      case 1:
+        return setState(() => _activeToDoList = _toDoList.getDoneToDoList());
+      case 2:
+        return setState(() => _activeToDoList = _toDoList.getUndoneToDoList());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    ToDoList _toDoList = widget.toDoList;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Todo List'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () => Navigator.pushNamed(context, '/new_todo'),
+              tooltip: 'Add new Todo',
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -28,23 +60,43 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                child: const SearchBar(),
+                child: SearchBar(
+                  onTextChange: onSearchContentChange,
+                ),
               ),
               Expanded(
-                child: ScrollListView(
-                  itemCount: _toDoList.list.length,
-                  itemBuilder: (context, index) =>
-                      ToDoItem(toDo: _toDoList.list[index]),
-                ),
+                child: ToDoListView(
+                    toDoList: _searchContent.isEmpty
+                        ? _activeToDoList
+                        : _searchedToDoList),
               ),
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushNamed(context, '/new_todo'),
-          child: const Icon(Icons.add),
-        ),
+        bottomNavigationBar: _buildNavBar(),
       ),
+    );
+  }
+
+  Widget _buildNavBar() {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.calendar_today),
+          label: 'All',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.calendar_view_day),
+          label: 'Today',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.schedule),
+          label: 'Upcoming',
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      selectedItemColor: AppColor.active,
+      onTap: _onItemTapped,
     );
   }
 }

@@ -28,7 +28,9 @@ class _ToDoItemState extends State<ToDoItem> {
                 Text(
                   _toDo.title,
                   style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   DateFormat('H:m:s dd/MM/yyyy').format(_toDo.todoTime),

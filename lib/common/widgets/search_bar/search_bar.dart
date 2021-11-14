@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 
 class SearchBar extends StatefulWidget {
-  const SearchBar({Key? key}) : super(key: key);
+  final ValueChanged<String> onTextChange;
+
+  const SearchBar({Key? key, required this.onTextChange}) : super(key: key);
 
   @override
   _SearchBarState createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<SearchBar> {
-  String? _content;
-
-  void onTextChange(value) {
-    setState(() {
-      _content = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    var onTextChange = widget.onTextChange;
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[300],
