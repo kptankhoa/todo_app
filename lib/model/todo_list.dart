@@ -28,4 +28,21 @@ class ToDoList {
             )
             .toList(),
       );
+
+  ToDoList getUpcomingToDos() {
+    var now = DateTime.now();
+    var tomorrowStart = DateTime(now.year, now.month, now.day + 1);
+    return ToDoList(
+      list: list.where((todo) => todo.todoTime.isAfter(tomorrowStart)).toList(),
+    );
+  }
+
+  ToDoList getTodayToDos() {
+    var now = DateTime.now();
+    var todayStart = DateTime(now.year, now.month, now.day);
+    var tomorrowStart = DateTime(now.year, now.month, now.day + 1);
+    return ToDoList(
+      list: list.where((todo) => todo.todoTime.isAfter(todayStart) && todo.todoTime.isBefore(tomorrowStart)).toList(),
+    );
+  }
 }

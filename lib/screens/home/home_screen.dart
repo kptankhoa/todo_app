@@ -26,6 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void setDone(int index) => setState(() {
+        _toDoList.list[index].setDone();
+      });
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -34,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return setState(() => _activeToDoList = _toDoList);
       case 1:
-        return setState(() => _activeToDoList = _toDoList.getDoneToDoList());
+        return setState(() => _activeToDoList = _toDoList.getTodayToDos());
       case 2:
-        return setState(() => _activeToDoList = _toDoList.getUndoneToDoList());
+        return setState(() => _activeToDoList = _toDoList.getUpcomingToDos());
     }
   }
 
@@ -66,9 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 child: ToDoListView(
-                    toDoList: _searchContent.isEmpty
-                        ? _activeToDoList
-                        : _searchedToDoList),
+                  toDoList: _searchContent.isEmpty
+                      ? _activeToDoList
+                      : _searchedToDoList,
+                  setDone: setDone,
+                ),
               ),
             ],
           ),

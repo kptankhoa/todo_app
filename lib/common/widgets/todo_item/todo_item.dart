@@ -4,21 +4,17 @@ import 'package:todo_app/common/widgets/modified/outlined_container/outlined_con
 import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/model/todo.dart';
 
-class ToDoItem extends StatefulWidget {
+class ToDoItem extends StatelessWidget {
   final ToDo toDo;
+  final Function() setItemDone;
 
-  const ToDoItem({Key? key, required this.toDo}) : super(key: key);
+  const ToDoItem({Key? key, required this.toDo, required this.setItemDone})
+      : super(key: key);
 
-  @override
-  _ToDoItemState createState() => _ToDoItemState();
-}
-
-class _ToDoItemState extends State<ToDoItem> {
   @override
   Widget build(BuildContext context) {
-    ToDo _toDo = widget.toDo;
     return OutlinedContainer(
-      borderColor: _toDo.isDone ? AppColor.disabled : AppColor.active,
+      borderColor: toDo.isDone ? AppColor.disabled : AppColor.active,
       child: Row(
         children: [
           Expanded(
@@ -26,28 +22,21 @@ class _ToDoItemState extends State<ToDoItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _toDo.title,
+                  toDo.title,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  DateFormat('H:m:s dd/MM/yyyy').format(_toDo.todoTime),
+                  DateFormat('H:m:s dd/MM/yyyy').format(toDo.todoTime),
                   style: const TextStyle(color: AppColor.disabled),
                 ),
               ],
             ),
           ),
-          if (!_toDo.isDone)
-            TextButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(AppColor.active),
-              ),
-              child:
-                  const Text('SET DONE', style: TextStyle(color: Colors.white)),
-            )
+          if (!toDo.isDone)
+            IconButton(onPressed: setItemDone, icon: const Icon(Icons.check), color: AppColor.active)
         ],
       ),
     );

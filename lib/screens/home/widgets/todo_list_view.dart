@@ -5,14 +5,15 @@ import 'package:todo_app/model/todo_list.dart';
 
 class ToDoListView extends StatelessWidget {
   final ToDoList toDoList;
-  const ToDoListView({Key? key, required this.toDoList}) : super(key: key);
+  final Function(int) setDone;
+  const ToDoListView({Key? key, required this.toDoList, required this.setDone}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ScrollListView(
       itemCount: toDoList.list.length,
       itemBuilder: (context, index) =>
-          ToDoItem(toDo: toDoList.list[index]),
+          ToDoItem(toDo: toDoList.list[index], setItemDone: () => setDone(index)),
     );
   }
 }
