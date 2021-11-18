@@ -29,7 +29,7 @@ class ToDoItem extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  DateFormat('H:m:s dd/MM/yyyy').format(toDo.todoTime),
+                  DateFormat('H:m:s dd/MM/yyyy').format(toDo.toDoTime),
                   style: const TextStyle(color: AppColor.disabled),
                 ),
               ],

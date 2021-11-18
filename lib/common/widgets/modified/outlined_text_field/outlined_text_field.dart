@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/common/widgets/modified/outlined_container/outlined_container.dart';
 
 class OutlinedTextField extends StatelessWidget {
   final String label;
-  final Function onChanged;
+  final Function(String) onChanged;
   final TextInputType keyboardType;
 
   const OutlinedTextField({
@@ -14,13 +15,17 @@ class OutlinedTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        hintText: label,
+    return OutlinedContainer(
+      padding: 8,
+      child: TextField(
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(0),
+            border: InputBorder.none,
+            hintText: label,
+          ),
+        keyboardType: keyboardType,
+        onChanged: (text) => onChanged(text),
       ),
-      keyboardType: keyboardType,
-      onChanged: (text) => onChanged(text),
     );
   }
 }

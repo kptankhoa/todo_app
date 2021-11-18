@@ -7,12 +7,9 @@ class ToDoList {
 
   void add(ToDo newTodo) => list.add(newTodo);
 
-  void doneAnItem(int doneTodoId) {
-    ToDo doneItem = list.firstWhere((todo) => todo.id == doneTodoId);
-    doneItem.setDone();
-  }
-
   List<ToDo> getAll() => list;
+
+  ToDoList getReverseList() => ToDoList(list: List.from(list.reversed));
 
   ToDoList getUndoneToDoList() =>
       ToDoList(list: list.where((todo) => !todo.isDone).toList());
@@ -33,7 +30,7 @@ class ToDoList {
     var now = DateTime.now();
     var tomorrowStart = DateTime(now.year, now.month, now.day + 1);
     return ToDoList(
-      list: list.where((todo) => todo.todoTime.isAfter(tomorrowStart)).toList(),
+      list: list.where((todo) => todo.toDoTime.isAfter(tomorrowStart)).toList(),
     );
   }
 
@@ -42,7 +39,13 @@ class ToDoList {
     var todayStart = DateTime(now.year, now.month, now.day);
     var tomorrowStart = DateTime(now.year, now.month, now.day + 1);
     return ToDoList(
-      list: list.where((todo) => todo.todoTime.isAfter(todayStart) && todo.todoTime.isBefore(tomorrowStart)).toList(),
+      list: list
+          .where(
+            (todo) =>
+                todo.toDoTime.isAfter(todayStart) &&
+                todo.toDoTime.isBefore(tomorrowStart),
+          )
+          .toList(),
     );
   }
 }

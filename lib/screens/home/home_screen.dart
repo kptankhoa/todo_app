@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/common/const.dart';
 import 'package:todo_app/common/widgets/search_bar/search_bar.dart';
 import 'package:todo_app/constants/colors.dart';
+import 'package:todo_app/model/todo.dart';
 import 'package:todo_app/model/todo_list.dart';
 import 'package:todo_app/screens/home/widgets/todo_list_view.dart';
 
@@ -13,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static final ToDoList _toDoList = dummyToDoList;
+  static final ToDoList _toDoList = dummyToDoList.getUndoneToDoList().getReverseList();
   String _searchContent = '';
   int _selectedIndex = 0;
   ToDoList _activeToDoList = _toDoList;
@@ -26,14 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void setDone(int index) => setState(() {
-        _toDoList.list[index].setDone();
-      });
+  void setDone(int index) => setState(() => _toDoList.list[index].setDone());
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(() => _selectedIndex = index);
     switch (index) {
       case 0:
         return setState(() => _activeToDoList = _toDoList);
@@ -42,6 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return setState(() => _activeToDoList = _toDoList.getUpcomingToDos());
     }
+  }
+
+  void _addNewToDo(ToDo newToDo) {
+    setState(() => _toDoList.add(newToDo));
+    _onItemTapped(_selectedIndex);
   }
 
   @override
@@ -53,7 +55,14 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () => Navigator.pushNamed(context, '/new_todo'),
+              onPressed: () => Navigator.pushNamed(
+                context,
+                '/new_todo',
+                arguments: {
+                  'newIndex':_toDoList.list.length,
+                  'function': _addNewToDo
+                },
+              ),
               tooltip: 'Add new Todo',
             ),
           ],
