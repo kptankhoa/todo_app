@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:todo_app/routes/routes.dart';
 import 'package:todo_app/screens/home/home_screen.dart';
 
-void main() => runApp(const Main());
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+void main() async {
+  tz.initializeTimeZones();
+  WidgetsFlutterBinding.ensureInitialized();
+  var initializationSettingsAndroid = const AndroidInitializationSettings('kp');
+  var initializationSettingsIOS = IOSInitializationSettings(
+    onDidReceiveLocalNotification:
+        ((int id, String? title, String? body, String? payload) async {}),
+  );
+  var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onSelectNotification: (String? payload) async {
+      if (payload != null) {
+        debugPrint('notification payload: ' + payload);
+      }
+    },
+  );
+  runApp(const Main());
+}
 
 class Main extends StatelessWidget {
   const Main({Key? key}) : super(key: key);
@@ -24,4 +48,3 @@ class Main extends StatelessWidget {
     );
   }
 }
-

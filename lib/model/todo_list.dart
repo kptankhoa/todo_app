@@ -49,6 +49,16 @@ class ToDoList {
     );
   }
 
+  void setUpNotification() {
+    var now = DateTime.now();
+    for (var toDo in list) {
+      if (!toDo.isDone &&
+          now.isBefore(toDo.toDoTime.subtract(const Duration(minutes: 10)))) {
+        toDo.scheduleAlarm();
+      }
+    }
+  }
+
   Map<String, dynamic> toJson() =>
       {'list': list.map((toDo) => toDo.toJson()).toList()};
 

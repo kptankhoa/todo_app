@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _toDoList = ToDoList(list: list);
       });
       _onItemTapped(_selectedIndex);
+      _toDoList.setUpNotification();
     });
   }
 
@@ -43,12 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _toDoList.add(newToDo));
     toDoDao.insert(newToDo);
     _onItemTapped(_selectedIndex);
+    _toDoList.setUpNotification();
   }
 
   void setDone(int id) {
     setState(() => _toDoList.list.firstWhere((element) => element.id == id).setDone());
     toDoDao.done(id);
     _onItemTapped(_selectedIndex);
+    _toDoList.setUpNotification();
   }
 
   void _onItemTapped(int index) {
