@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/common/const.dart';
 import 'package:todo_app/common/widgets/search_bar/search_bar.dart';
 import 'package:todo_app/constants/colors.dart';
+import 'package:todo_app/data_access/db_provider.dart';
 import 'package:todo_app/model/todo.dart';
 import 'package:todo_app/model/todo_list.dart';
 import 'package:todo_app/screens/home/widgets/todo_list_view.dart';
@@ -14,11 +14,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static final ToDoList _toDoList = dummyToDoList.getUndoneToDoList().getReverseList();
+  static ToDoList _toDoList = ToDoList(list: []);
+  ToDoDao toDoDao = ToDoDao();
   String _searchContent = '';
   int _selectedIndex = 0;
   ToDoList _activeToDoList = _toDoList;
   ToDoList _searchedToDoList = _toDoList;
+
+  @override
+  void initState() {
+    super.initState();
+    toDoDao.getToDos().then((List<ToDo> list) {
+      setState(() {
+        _toDoList = ToDoList(list: list);
+      });
+      _onItemTapped(_selectedIndex);
+    });
+  }
 
   ValueChanged<String>? onSearchContentChange(String value) {
     setState(() {
@@ -27,23 +39,35 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void setDone(int index) => setState(() => _toDoList.list[index].setDone());
+  void _addNewToDo(ToDo newToDo) {
+    setState(() => _toDoList.add(newToDo));
+    toDoDao.insert(newToDo);
+    _onItemTapped(_selectedIndex);
+  }
+
+  void setDone(int id) {
+    setState(() => _toDoList.list.firstWhere((element) => element.id == id).setDone());
+    toDoDao.done(id);
+    _onItemTapped(_selectedIndex);
+  }
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
     switch (index) {
       case 0:
-        return setState(() => _activeToDoList = _toDoList);
+        return setState(
+          () => _activeToDoList = _toDoList.getUndoneToDoList(),
+        );
       case 1:
-        return setState(() => _activeToDoList = _toDoList.getTodayToDos());
+        return setState(
+          () => _activeToDoList = _toDoList.getTodayToDos().getUndoneToDoList(),
+        );
       case 2:
-        return setState(() => _activeToDoList = _toDoList.getUpcomingToDos());
+        return setState(
+          () => _activeToDoList =
+              _toDoList.getUpcomingToDos().getUndoneToDoList(),
+        );
     }
-  }
-
-  void _addNewToDo(ToDo newToDo) {
-    setState(() => _toDoList.add(newToDo));
-    _onItemTapped(_selectedIndex);
   }
 
   @override
@@ -59,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 '/new_todo',
                 arguments: {
-                  'newIndex':_toDoList.list.length,
+                  'newIndex': _toDoList.list.length,
                   'function': _addNewToDo
                 },
               ),

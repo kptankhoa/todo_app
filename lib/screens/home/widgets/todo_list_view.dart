@@ -16,7 +16,7 @@ class ToDoListView extends StatelessWidget {
       itemCount: toDoList.list.length,
       itemBuilder: (context, index) => ToDoItem(
         toDo: toDoList.list[index],
-        setItemDone: () => setDone(index),
+        setItemDone: () => setDone(toDoList.list[index].id),
       ),
     );
   }

@@ -9,7 +9,7 @@ class ToDoList {
 
   List<ToDo> getAll() => list;
 
-  ToDoList getReverseList() => ToDoList(list: List.from(list.reversed));
+  ToDoList getReverseList() => ToDoList(list: list.reversed.toList());
 
   ToDoList getUndoneToDoList() =>
       ToDoList(list: list.where((todo) => !todo.isDone).toList());
@@ -48,4 +48,12 @@ class ToDoList {
           .toList(),
     );
   }
+
+  Map<String, dynamic> toJson() =>
+      {'list': list.map((toDo) => toDo.toJson()).toList()};
+
+  ToDoList.fromJson(Map<String, dynamic> json)
+      : list = List<ToDo>.from(
+          json['list'].map((toDoJson) => ToDo.fromJson(toDoJson)).toList(),
+        );
 }
